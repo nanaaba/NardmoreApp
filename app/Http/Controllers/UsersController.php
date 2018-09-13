@@ -64,7 +64,7 @@ class UsersController extends Controller {
         ]);
         try {
 
-            $response = $client->request('PUT', $baseurl, ['json' => json_encode($data), 'verify' => false]);
+            $response = $client->request('PUT', $baseurl, ['json' => $data, 'verify' => false]);
 
             $body = $response->getBody();
             return $body;

@@ -8,6 +8,6 @@
 
 return [
      'LIVE_URL' =>'http://34.239.122.97/nardmoreapi'
-     //   'LIVE_URL' =>'localhost/nardmoreApi'
+       // 'LIVE_URL' =>'localhost/nardmoreApi'
 
 ];

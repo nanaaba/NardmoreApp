@@ -67,7 +67,7 @@ class CategoryController extends Controller {
         
         try {
 
-            $response = $client->request('PUT', $baseurl, ['json' => json_encode($data), 'verify' => true]);
+            $response = $client->request('PUT', $baseurl, ['json' => $data, 'verify' => true]);
 
             $body = $response->getBody();
           

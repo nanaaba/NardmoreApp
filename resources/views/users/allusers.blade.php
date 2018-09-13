@@ -90,8 +90,76 @@
                                             </div>
                                             <div class="form-group">
                                                 <label> Role</label>
-                                                <input name="role" class="form-control" required>
+
+                                                <select name="role"   class="populate select2"  style="width:100%" required>
+
+                                                    <option value="" >Select---</option>
+                                                    <option value="Admin">Admin</option>
+                                                    <option value="Normal User">Normal User</option>
+                                                </select> 
                                             </div>
+
+
+
+
+                                            <div class="pull-right">
+                                                <input class="btn btn-primary" type="submit" value="Submit"/>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="updateModalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title"> User Information</h4>
+                                </div>
+                                <br>
+                                <div class="alert alert-success fade in" id="successdiv" style="display: none">
+                                    <button data-dismiss="alert" class="close close-sm" type="button">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                    <strong>Success!</strong> <span id="successmsg"></span>
+                                </div>
+                                <div class="alert alert-block alert-danger fade in" id="errordiv" style="display: none">
+                                    <button data-dismiss="alert" class="close close-sm" type="button">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                    <strong>Error!</strong> <span id="errormsg"></span>
+                                </div>
+                                <div class="modal-body row">
+
+                                    <form id="updateUser">
+                                        <input type="hidden" class="form-control form-control-lg input-lg" id="token" name="_token" value="<?php echo csrf_token() ?>" />
+
+                                        <input type="hidden" id="code" name="userid"/>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label> Username</label>
+                                                <input name="username" id="username" class="form-control" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label> Contact</label>
+                                                <input name="contact" id="contact" class="form-control" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label> Role</label>
+
+                                                <select name="role" id="roles"  class="populate select2"  style="width:100%" required>
+
+                                                    <option value="" >Select---</option>
+                                                    <option value="Admin">Admin</option>
+                                                    <option value="Normal User">Normal User</option>
+                                                </select> 
+                                            </div>
+
+
+
 
                                             <div class="pull-right">
                                                 <input class="btn btn-primary" type="submit" value="Submit"/>
@@ -104,45 +172,6 @@
                         </div>
                     </div>
 
-                    <div class="modal fade" id="editCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title">Update Category</h4>
-                                </div>
-                                <br>
-
-                                <div class="modal-body row">
-
-                                    <form id="updateCategory">
-                                        <input type="hidden" class="form-control form-control-lg input-lg" id="token" name="_token" value="<?php echo csrf_token() ?>" />
-
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label> Name</label>
-                                                <input name="name" id="catname" class="form-control" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label> Orientation</label>
-                                                <input name="orientation" class="form-control" required>
-                                            </div>
-                                            <input type="hidden" name="code" id="catcode" class="form-control" required>
-                                            <div class="form-group">
-                                                <label> Description</label>
-                                                <textarea rows="2" name="description" id="catdescription"  class="form-control" required></textarea>
-                                            </div>
-
-                                            <div class="pull-right">
-                                                <input class="btn btn-primary" type="submit" value="Update"/>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
             </section>
@@ -196,7 +225,7 @@
                             r[++j] = '<td class="subject">' + value.role + '</td>';
 
                             r[++j] = '<td class="subject">' + value.datecreated + '</td>';
-                            r[++j] = '<td><button onclick="editType(\'' + value.id + '\')"  class="btn btn-info btn-sm editBtn" type="button">Edit</button>\n\
+                            r[++j] = '<td><button onclick="editUser(\'' + value.id + '\')"  class="btn btn-info btn-sm editBtn" type="button">Edit</button>\n\
                               <button onclick="deleteType(\'' + value.id + '\',\'' + value.username + '\')"  class="btn btn-danger btn-sm deleteBtn" type="button">Delete</button></td>';
                             rowNode = datatable.row.add(r);
                         });
@@ -248,7 +277,51 @@
                 }
             },
             error: function (jXHR, textStatus, errorThrown) {
-                                $('input:submit').attr("disabled", false);
+                $('input:submit').attr("disabled", false);
+
+                $('#loaderModal').modal('hide');
+
+                console.log(errorThrown);
+            }
+        });
+
+    });
+
+
+
+ $('#updateUser').on('submit', function (e) {
+        e.preventDefault();
+        $('input:submit').attr("disabled", true);
+        var formData = $(this).serialize();
+        console.log(formData);
+        $('#loaderModal').modal('show');
+
+        $.ajax({
+            url: "{{url('user')}}",
+            type: "PUT",
+            data: formData,
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                $('input:submit').attr("disabled", false);
+                $('#loaderModal').modal('hide');
+                $('#updateModalUser').modal('hide');
+
+
+                if (data.success == 0) {
+                    document.getElementById("saveUser").reset();
+                    $('#successmsg').html(data.message);
+                    $('#successdiv').show();
+                    $('#errordiv').hide();
+                    getUsers();
+                } else {
+                    $('#errormsg').html(data.message);
+                    $('#errordiv').show();
+                    $('#successdiv').hide();
+                }
+            },
+            error: function (jXHR, textStatus, errorThrown) {
+                $('input:submit').attr("disabled", false);
 
                 $('#loaderModal').modal('hide');
 
@@ -307,33 +380,32 @@
 
     });
 
-    function editType(code) {
+    function editUser(code) {
         console.log('goood');
         $('#code').val(code);
         $('#loaderModal').modal('show');
 
-        getCategoryInfo(code);
+        getUserInfo(code);
         $('#loaderModal').modal('hide');
 
-        $('#editModal').modal('show');
+        $('#updateModalUser').modal('show');
 
     }
 
-    function getCategoryInfo(id) {
+    function getUserInfo(id) {
 
 
         $.ajax({
-            url: 'category/' + id,
+            url: 'user/' + id,
             type: "GET",
             dataType: "json",
             success: function (data) {
-                console.log(data[0].name);
-                $('#aprtname').html(data[0].name);
-                $('#apartment_name').val(data[0].name);
-                $('#up_apartmenttype').val(data[0].type).change();
-                $('#up_currency').val(data[0].currency).change();
-                $('#up_monthlycharge').val(data[0].monthly_charge);
-                $('#up_estate').val(data[0].estate_id).change();
+                var details = data.details;
+                console.log(details.username);
+                $('#username').val(details.username);
+                $('#contact').val(details.contact);
+                $('#roles').val(details.role).change();
+                
                 $('#code').val(id);
 
             },

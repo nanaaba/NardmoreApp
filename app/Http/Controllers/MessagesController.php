@@ -73,7 +73,7 @@ class MessagesController extends Controller {
 
 
         $data = $request->all();
-       
+
         $url = config('constants.LIVE_URL');
         $baseurl = $url . '/messages/replyusermessages';
 
@@ -84,7 +84,7 @@ class MessagesController extends Controller {
             ],
             'http_errors' => true
         ]);
-        
+
         try {
 
             $response = $client->request('POST', $baseurl, ['json' => $data, 'verify' => false]);
@@ -158,10 +158,7 @@ class MessagesController extends Controller {
         }
     }
 
-    
-    
-    
-      public function allNewMessages() {
+    public function allNewMessages() {
 
 
         $url = config('constants.LIVE_URL');
@@ -188,8 +185,6 @@ class MessagesController extends Controller {
         }
     }
 
-    
-    
     public function getUserMesaages($userid) {
 
 
@@ -215,6 +210,23 @@ class MessagesController extends Controller {
         } catch (Exception $e) {
             return $this->composeErrorMessage($e->getMessage());
         }
+    }
+
+    public function getNewMsgDashboard() {
+
+        $messages = $this->allNewMessages();
+        $message = json_decode($messages, true);
+        $msg_total = sizeof($message['details']);
+        $newMsgs = array_slice($message['details'], 0, 5, true);
+        
+        
+        $dataArray = array(
+            "size"=>$msg_total,
+            "messages"=>$newMsgs
+        );
+        return $dataArray;
+        
+        
     }
 
 }
